@@ -1,11 +1,13 @@
 # from django.http.response import JsonResponse
 #
-from rest_framework.views import APIView
+# from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 #from .serializers import HelloWorldSerializer
+from rest_framework.generics import  ListAPIView, CreateAPIView, ListCreateAPIView
 from .serializers import SubscriberSerializer
 from .models import Subscriber
+from rest_framework.viewsets import ModelViewSet
 
 
 # class HelloWorldView(APIView):
@@ -25,19 +27,21 @@ from .models import Subscriber
 #             return Response({"errors": serializer.errors})
 
 
-class SubscriberView(APIView):
-    def get(self, request):
-        all_subscribers = Subscriber.objects.all()
-        serialized_subscribers = SubscriberSerializer(all_subscribers, many=True)
-        return Response(serialized_subscribers.data)
-
-    def post(self, request):
-        serializer = SubscriberSerializer(data=request.data)
-        if serializer.is_valid():
-            subscriber_instance = Subscriber.objects.create(**serializer.data)
-            return Response({"message": "Created subscriber {}".format(subscriber_instance.id)})
-        else:
-            return Response({"errors": serializer.errors})
+class SubscriberViewSet(ModelViewSet):
+    serializer_class = SubscriberSerializer
+    queryset = Subscriber.objects.all()
+    # def get(self, request):
+    #     all_subscribers = Subscriber.objects.all()
+    #     serialized_subscribers = SubscriberSerializer(all_subscribers, many=True)
+    #     return Response(serialized_subscribers.data)
+    #
+    # def post(self, request):
+    #     serializer = SubscriberSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         subscriber_instance = Subscriber.objects.create(**serializer.data)
+    #         return Response({"message": "Created subscriber {}".format(subscriber_instance.id)})
+    #     else:
+    #         return Response({"errors": serializer.errors})
 
 
 # @api_view(["GET", "POST"])
